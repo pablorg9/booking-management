@@ -1,0 +1,46 @@
+version: '3'
+services:
+  security-ms:
+    build: 
+      context: ./services/security-ms
+      dockerfile: Dockerfile
+    container_name: bm-security-ms
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      SERVICE_MS_URL: ${SERVICE_MS_URL}
+      SECRET_JWT: ${SECRET_JWT}
+    networks:
+      - bm-network
+    volumes:
+      - ./services/security-ms/src:/security-ms/src
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.4.3
+    container_name: bm-mysql
+    restart: unless-stopped
+    networks:
+      - bm-network
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./scripts/mysql:/docker-entrypoint-initdb.d
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${DB_MYSQL_DATABASE}
+      MYSQL_USER: ${DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+    ports:
+      - 33061:3306
+
+networks:
+  bm-network:
+    driver: bridge
+
+volumes:
+  mysql:
