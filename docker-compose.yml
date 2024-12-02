@@ -9,7 +9,7 @@ services:
     env_file: .env
     environment:
       NODE_ENV: ${NODE_ENV}
-      SERVICE_MS_URL: ${SERVICE_MS_URL}
+      BOOKING_MS_URL: ${BOOKING_MS_URL}
       SECRET_JWT: ${SECRET_JWT}
     networks:
       - bm-network
@@ -19,6 +19,26 @@ services:
       - '8080:8080'
     depends_on:
       - mysql
+
+  booking-ms:
+    build: 
+      context: ./services/booking-ms
+      dockerfile: Dockerfile
+    container_name: bm-booking-ms
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      SECRET_JWT: ${SECRET_JWT}
+    networks:
+      - bm-network
+    volumes:
+      - ./services/booking-ms/src:/booking-ms/src
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mysql
+      - mongo
 
   mysql:
     image: mysql:8.4.3
@@ -38,9 +58,40 @@ services:
     ports:
       - 33061:3306
 
+  mongo:
+    image: mongo:7.0.12
+    container_name: bm-mongodb
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - bm-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_MONGO_PASSWORD}
+
+  mongo-express:
+    image: mongo-express
+    container_name: bm-mongo-express
+    restart: always
+    ports:
+      - 27018:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_MONGO_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${DB_MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_MONGO_EXPRESS_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${DB_MONGO_USER}:${DB_MONGO_PASSWORD}@${DB_MONGO_HOST}:${DB_MONGO_DOCKER_PORT}/${DB_MONGO_DATABASE}?authSource=admin&retryWrites=true&w=majority
+    networks:
+      - bm-network
+    depends_on:
+      - mongo
+
 networks:
   bm-network:
     driver: bridge
 
 volumes:
   mysql:
+  mongodb:
