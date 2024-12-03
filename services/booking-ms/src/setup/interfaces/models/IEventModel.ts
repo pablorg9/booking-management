@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 export interface IEventModel {
-    event_id: ObjectId;
+    _id: ObjectId;
     user_id: string;
     event_name: string;
     event_maxTotalAttenders: number;

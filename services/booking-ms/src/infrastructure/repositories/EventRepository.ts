@@ -20,7 +20,7 @@ export class EventRepository implements IEventRepository {
 
     async findEventsById(eventId: string): Promise<EventEntity> {
         const id = new ObjectId(eventId);
-        const event = await this._mongo.db.collection<IEventModel>(this._defaultCollection).findOne({ event_id: id });
+        const event = await this._mongo.db.collection<IEventModel>(this._defaultCollection).findOne({ _id: id });
         if (!event) return {} as EventEntity;
         return this.mapEventModelToEntity(event);
     }
@@ -39,7 +39,7 @@ export class EventRepository implements IEventRepository {
     async updateEventDate(eventId: string, datetime: Date): Promise<void> {
         const id = new ObjectId(eventId);
         await this._mongo.db.collection(this._defaultCollection).updateOne(
-            { event_id: id },
+            { _id: id },
             {
                 $set: {
                     event_datetime: datetime,
@@ -50,12 +50,12 @@ export class EventRepository implements IEventRepository {
 
     async deleteEvent(eventId: string): Promise<void> {
         const id = new ObjectId(eventId);
-        await this._mongo.db.collection(this._defaultCollection).deleteOne({ event_id: id });
+        await this._mongo.db.collection(this._defaultCollection).deleteOne({ _id: id });
     }
 
     private mapEventEntityToModel = (event: EventEntity): IEventModel => {
         return {
-            event_id: new ObjectId(event.id),
+            _id: new ObjectId(event.id),
             user_id: event.userId,
             event_name: event.name,
             event_maxTotalAttenders: event.maxTotalAttenders,
@@ -70,7 +70,7 @@ export class EventRepository implements IEventRepository {
     private mapEventModelToEntity = (event: IEventModel): EventEntity => {
         if (!event) return {} as EventEntity;
         return new EventEntity(
-            event.event_id.toHexString(),
+            event._id.toHexString(),
             event.user_id,
             event.event_name,
             event.event_maxTotalAttenders,
