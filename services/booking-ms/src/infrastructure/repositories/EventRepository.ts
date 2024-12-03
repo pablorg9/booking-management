@@ -48,6 +48,11 @@ export class EventRepository implements IEventRepository {
         );
     }
 
+    async deleteEvent(eventId: string): Promise<void> {
+        const id = new ObjectId(eventId);
+        await this._mongo.db.collection(this._defaultCollection).deleteOne({ event_id: id });
+    }
+
     private mapEventEntityToModel = (event: EventEntity): IEventModel => {
         return {
             event_id: new ObjectId(event.id),

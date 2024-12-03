@@ -21,6 +21,10 @@ export class EventAppService {
         return this._eventService.listUpcomingEvents();
     }
 
+    async deleteEvent(eventId: string, userId: string): Promise<void> {
+        await this._eventService.deleteEvent(eventId, userId);
+    }
+
     private mapEventDTOToEntity = (dto: IEventDTO): EventEntity => {
         const id = dto.id ? dto.id : new ObjectId().toHexString();
         const user = new EventEntity(

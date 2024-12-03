@@ -5,4 +5,5 @@ export interface IEventRepository {
     createEvent(_event: EventEntity): Promise<void>;
     findEventsById(_eventId: string): Promise<EventEntity>;
     listLimitedEventsByDate(_date: Date, _limit: number): Promise<EventEntity[]>;
+    deleteEvent(_eventId: string): Promise<void>;
 }

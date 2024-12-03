@@ -54,4 +54,20 @@ export class EventService {
         await this._eventRepository.createEvent(event);
         return event;
     }
+
+    async deleteEvent(eventId: string, userId: string): Promise<void> {
+        const event = await this._eventRepository.findEventsById(eventId);
+        if (event.userId !== userId) {
+            throw {
+                message: 'This event was not created by you',
+                status: StatusCode.FORBIDDEN,
+                code: ErrorCode.INVALID_PARAMETERS,
+                customError: true,
+            };
+        }
+
+        //TODO: check if someone booked for the event
+
+        await this._eventRepository.deleteEvent(eventId);
+    }
 }
