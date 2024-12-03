@@ -25,7 +25,7 @@ server.setErrorConfig((app) => {
     app.use(errorMiddleware);
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 
 const application = server.build();
 application.listen(port, () => {

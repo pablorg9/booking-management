@@ -10,6 +10,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       BOOKING_MS_URL: ${BOOKING_MS_URL}
+      PORT: ${SECURITY_PORT}
       SECRET_JWT: ${SECRET_JWT}
     networks:
       - bm-network
@@ -30,6 +31,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       SECRET_JWT: ${SECRET_JWT}
+      PORT: ${BOOKING_PORT}
     networks:
       - bm-network
     volumes:
