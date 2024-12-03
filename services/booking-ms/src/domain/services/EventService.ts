@@ -2,14 +2,36 @@ import { injectable, inject } from 'inversify';
 import { IEventRepository } from '@domain/repositories';
 import { EVENT_REPOSITORY } from '@setup/Symbols';
 import { EventEntity } from '@domain/entities';
-import { getCurrentTime } from '@setup/utils';
+import { ErrorCode, getCurrentTime, StatusCode } from '@setup/utils';
 
 @injectable()
 export class EventService {
     constructor(@inject(EVENT_REPOSITORY) private _eventRepository: IEventRepository) {}
 
-    async example(): Promise<any> {
-        return this._eventRepository.example();
+    async moveEvent(eventId: string, newDateTime: string, userId: string): Promise<void> {
+        const event = await this._eventRepository.findEventsById(eventId);
+        if (event.userId !== userId) {
+            throw {
+                message: 'This event was not created by you',
+                status: StatusCode.FORBIDDEN,
+                code: ErrorCode.INVALID_PARAMETERS,
+                customError: true,
+            };
+        }
+
+        const currentEventDateTime = new Date(event.datetime);
+        const newEventDateTime = new Date(newDateTime);
+
+        if (newEventDateTime <= currentEventDateTime) {
+            throw {
+                message: 'The new date and time must be greater than the current event date and time',
+                status: StatusCode.BAD_REQUEST,
+                code: ErrorCode.INVALID_PARAMETERS,
+                customError: true,
+            };
+        }
+
+        await this._eventRepository.updateEventDate(eventId, newDateTime);
     }
 
     async createEvent(event: EventEntity): Promise<EventEntity> {

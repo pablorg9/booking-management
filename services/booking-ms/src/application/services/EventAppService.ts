@@ -8,13 +8,13 @@ import { ObjectId } from 'mongodb';
 export class EventAppService {
     constructor(@inject(EventService) private _eventService: EventService) {}
 
-    async example(): Promise<any> {
-        return this._eventService.example();
-    }
-
     async createEvent(eventDTO: IEventDTO): Promise<EventEntity> {
         const event = this.mapEventDTOToEntity(eventDTO);
         return this._eventService.createEvent(event);
+    }
+
+    async moveEvent(eventId: string, newDateTime: string, userId: string): Promise<void> {
+        await this._eventService.moveEvent(eventId, newDateTime, userId);
     }
 
     private mapEventDTOToEntity = (dto: IEventDTO): EventEntity => {

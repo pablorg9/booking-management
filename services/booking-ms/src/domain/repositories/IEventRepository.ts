@@ -1,6 +1,7 @@
 import { EventEntity } from '@domain/entities';
 
 export interface IEventRepository {
-    example(): Promise<any>;
+    updateEventDate(_eventId: string, _newDateTime: string): Promise<void>;
     createEvent(_event: EventEntity): Promise<void>;
+    findEventsById(_eventId: string): Promise<EventEntity>;
 }

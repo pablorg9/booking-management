@@ -13,14 +13,41 @@ export class EventRepository implements IEventRepository {
 
     constructor(@inject(MONGO) private _mongo: IMongo) {}
 
-    async example(): Promise<any> {
-        const collections = this._mongo.db.collections();
-        console.log(collections);
-    }
-
     async createEvent(event: EventEntity): Promise<void> {
         const eventToSave = this.mapEventEntityToModel(event);
         await this._mongo.db.collection(this._defaultCollection).insertOne(eventToSave);
+    }
+
+    async findEventsById(eventId: string): Promise<EventEntity> {
+        const id = new ObjectId(eventId);
+        const event = (await this._mongo.db
+            .collection(this._defaultCollection)
+            .findOne({ event_id: id })) as IEventModel | null;
+        if (!event) return {} as EventEntity;
+        return this.mapEventModelToEntity(event);
+    }
+
+    async listUpcomingEvents(date: Date): Promise<IEventModel[]> {
+        const upcomingEvents = await this._mongo.db
+            .collection(this._defaultCollection)
+            .find({ event_datatime: { $gt: date } })
+            .sort({ event_datatime: 1 })
+            .limit(20)
+            .toArray();
+
+        return upcomingEvents;
+    }
+
+    async updateEventDate(eventId: string, datatime: string): Promise<void> {
+        const id = new ObjectId(eventId);
+        await this._mongo.db.collection(this._defaultCollection).updateOne(
+            { event_id: id },
+            {
+                $set: {
+                    event_datatime: datatime,
+                },
+            },
+        );
     }
 
     private mapEventEntityToModel = (event: EventEntity): IEventModel => {
@@ -35,5 +62,20 @@ export class EventRepository implements IEventRepository {
             event_datetime: event.datetime,
             event_createdAt: event.createdAt,
         };
+    };
+
+    private mapEventModelToEntity = (event: IEventModel): EventEntity => {
+        if (!event) return {} as EventEntity;
+        return new EventEntity(
+            event.event_id.toHexString(),
+            event.user_id,
+            event.event_name,
+            event.event_maxTotalAttenders,
+            event.event_price,
+            event.event_description,
+            event.event_details,
+            event.event_datetime,
+            event.event_createdAt,
+        );
     };
 }

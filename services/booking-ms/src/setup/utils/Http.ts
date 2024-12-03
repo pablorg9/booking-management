@@ -8,6 +8,7 @@ export enum StatusCode {
     NO_CONTENT = 204,
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
     NOT_FOUND = 404,
     CONFLICT = 409,
     PRECONDITION_FAILED = 412,
@@ -27,11 +28,7 @@ export enum ErrorCode {
     API_ERROR_TIMEOUT = 'F004',
     INVALID_ACCESS_TOKEN = 'F005',
     UNAUTHORIZED = 'F006',
-
-    // MYSQL ERROR LIST
-    DUPLICATE_ENTRY = 'SQ001',
-    SQL_SYNTAX_ERROR = 'SQ002',
-    UNKNOWN_DATABASE_ERROR = 'SQ003',
+    INVALID_PARAMETERS = 'F007',
 }
 
 export abstract class ApiResponse<T> {
