@@ -1,12 +1,15 @@
 import { injectable, inject } from 'inversify';
-import { IEventRepository } from '@domain/repositories';
-import { EVENT_REPOSITORY } from '@setup/Symbols';
+import { IBookingRepository, IEventRepository } from '@domain/repositories';
+import { BOOKING_REPOSITORY, EVENT_REPOSITORY } from '@setup/Symbols';
 import { EventEntity } from '@domain/entities';
 import { ErrorCode, StatusCode } from '@setup/utils';
 
 @injectable()
 export class EventService {
-    constructor(@inject(EVENT_REPOSITORY) private _eventRepository: IEventRepository) {}
+    constructor(
+        @inject(BOOKING_REPOSITORY) private _bookingRepository: IBookingRepository,
+        @inject(EVENT_REPOSITORY) private _eventRepository: IEventRepository,
+    ) {}
 
     async moveEvent(eventId: string, newDateTime: string, userId: string): Promise<void> {
         const event = await this._eventRepository.findEventsById(eventId);
@@ -67,7 +70,14 @@ export class EventService {
             };
         }
 
-        //TODO: check if someone booked for the event
+        if (await this._bookingRepository.eventHasBookings(event.id)) {
+            throw {
+                message: 'You cannot delete this event because it already has bookings',
+                status: StatusCode.CONFLICT,
+                code: ErrorCode.EVENT_HAS_BOOKING,
+                customError: true,
+            };
+        }
 
         await this._eventRepository.deleteEvent(eventId);
     }

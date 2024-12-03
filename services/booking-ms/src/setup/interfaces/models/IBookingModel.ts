@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 
 export interface IBookingModel {
     _id: ObjectId;
-    event_id: string;
+    event_id: ObjectId;
     user_id: string;
     payment_id: string;
     event_name: string;

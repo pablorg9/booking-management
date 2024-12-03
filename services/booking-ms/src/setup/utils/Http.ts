@@ -29,7 +29,15 @@ export enum ErrorCode {
     INVALID_ACCESS_TOKEN = 'F005',
     UNAUTHORIZED = 'F006',
     INVALID_PARAMETERS = 'F007',
+    // Custom Failure Codes
+    EVENT_HAS_BOOKING = 'CF008',
 }
+
+export const validateUserAuth = (user_id: string | null | undefined) => {
+    if (!user_id) {
+        throw new ApiErrorResponse(StatusCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED, 'Invalid token object');
+    }
+};
 
 export abstract class ApiResponse<T> {
     isError: boolean;

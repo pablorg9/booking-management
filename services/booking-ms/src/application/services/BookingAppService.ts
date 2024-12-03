@@ -13,6 +13,10 @@ export class BookingAppService {
         return this._bookingService.createBooking(booking);
     }
 
+    async listMyBookings(userId: string): Promise<Booking[]> {
+        return this._bookingService.listMyBookings(userId);
+    }
+
     private mapBookingDTOToEntity = (dto: IBookingDTO): Booking => {
         const id = dto.id ? dto.id : new ObjectId().toHexString();
         const user = new Booking(id, dto.userId, dto.eventId, dto.paymentId);
