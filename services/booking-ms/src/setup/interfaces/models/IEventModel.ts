@@ -5,6 +5,7 @@ export interface IEventModel {
     user_id: string;
     event_name: string;
     event_maxTotalAttenders: number;
+    event_totalAttenders: number;
     event_price: number;
     event_description: string;
     event_details: Record<string, any>;

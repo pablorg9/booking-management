@@ -48,6 +48,18 @@ export class EventRepository implements IEventRepository {
         );
     }
 
+    async updateEventTotalAttenders(eventId: string): Promise<void> {
+        const id = new ObjectId(eventId);
+        await this._mongo.db.collection(this._defaultCollection).updateOne(
+            { _id: id },
+            {
+                $inc: {
+                    event_totalAttenders: 1,
+                },
+            },
+        );
+    }
+
     async deleteEvent(eventId: string): Promise<void> {
         const id = new ObjectId(eventId);
         await this._mongo.db.collection(this._defaultCollection).deleteOne({ _id: id });
@@ -59,6 +71,7 @@ export class EventRepository implements IEventRepository {
             user_id: event.userId,
             event_name: event.name,
             event_maxTotalAttenders: event.maxTotalAttenders,
+            event_totalAttenders: event.totalAttenders,
             event_price: event.price,
             event_description: event.description,
             event_details: event.details,
@@ -74,6 +87,7 @@ export class EventRepository implements IEventRepository {
             event.user_id,
             event.event_name,
             event.event_maxTotalAttenders,
+            event.event_totalAttenders,
             event.event_price,
             event.event_description,
             event.event_details,

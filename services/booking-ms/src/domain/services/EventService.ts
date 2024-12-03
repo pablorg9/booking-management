@@ -42,6 +42,7 @@ export class EventService {
     async createEvent(event: EventEntity): Promise<EventEntity> {
         event.createdAt = new Date();
         event.datetime = new Date(event.datetime);
+        event.totalAttenders = 0;
 
         if (event.datetime <= event.createdAt) {
             throw {

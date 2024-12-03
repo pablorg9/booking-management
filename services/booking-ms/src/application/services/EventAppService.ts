@@ -32,6 +32,7 @@ export class EventAppService {
             dto.userId,
             dto.name,
             dto.maxTotalAttenders,
+            dto.totalAttenders || 0,
             dto.price,
             dto.description,
             dto.details,

@@ -5,6 +5,7 @@ export class EventEntity {
         public userId: string,
         public name: string,
         public maxTotalAttenders: number,
+        public totalAttenders: number,
         public price: number,
         public description: string,
         public details: Record<string, any>,
