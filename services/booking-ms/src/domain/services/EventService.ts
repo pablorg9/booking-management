@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { IEventRepository } from '@domain/repositories';
 import { EVENT_REPOSITORY } from '@setup/Symbols';
 import { EventEntity } from '@domain/entities';
-import { ErrorCode, getCurrentTime, StatusCode } from '@setup/utils';
+import { ErrorCode, StatusCode } from '@setup/utils';
 
 @injectable()
 export class EventService {
@@ -31,11 +31,26 @@ export class EventService {
             };
         }
 
-        await this._eventRepository.updateEventDate(eventId, newDateTime);
+        await this._eventRepository.updateEventDate(eventId, newEventDateTime);
+    }
+
+    async listUpcomingEvents(): Promise<EventEntity[]> {
+        const currentDate = new Date();
+        return this._eventRepository.listLimitedEventsByDate(currentDate, 20);
     }
 
     async createEvent(event: EventEntity): Promise<EventEntity> {
-        event.createdAt = getCurrentTime();
+        event.createdAt = new Date();
+        event.datetime = new Date(event.datetime);
+
+        if (event.datetime <= event.createdAt) {
+            throw {
+                message: 'The date and time must be greater than the current date and time',
+                status: StatusCode.BAD_REQUEST,
+                code: ErrorCode.INVALID_PARAMETERS,
+                customError: true,
+            };
+        }
         await this._eventRepository.createEvent(event);
         return event;
     }

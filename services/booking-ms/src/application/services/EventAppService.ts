@@ -17,6 +17,10 @@ export class EventAppService {
         await this._eventService.moveEvent(eventId, newDateTime, userId);
     }
 
+    async listUpcomingEvents(): Promise<EventEntity[]> {
+        return this._eventService.listUpcomingEvents();
+    }
+
     private mapEventDTOToEntity = (dto: IEventDTO): EventEntity => {
         const id = dto.id ? dto.id : new ObjectId().toHexString();
         const user = new EventEntity(

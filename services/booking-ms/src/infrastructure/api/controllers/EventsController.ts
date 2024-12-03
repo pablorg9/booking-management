@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { inject } from 'inversify';
 import { Request } from 'express';
-import { controller, httpPost, httpPut, interfaces, request, requestParam } from 'inversify-express-utils';
+import { controller, httpGet, httpPost, httpPut, interfaces, request, requestParam } from 'inversify-express-utils';
 import { EventAppService } from '@application/services';
 import { ApiErrorResponse, ApiSuccessResponse, ErrorCode, StatusCode } from '@utils';
 import { jwtMiddleware } from '../middlewares';
@@ -22,6 +22,14 @@ export class EventController implements interfaces.Controller {
         eventDTO.userId = user_id;
         const event = await this._eventAppService.createEvent(eventDTO);
         const response = new ApiSuccessResponse<typeof event>(201, event);
+
+        return response;
+    }
+
+    @httpGet('/comming-soon', jwtMiddleware)
+    async listUpcomingEvents() {
+        const events = await this._eventAppService.listUpcomingEvents();
+        const response = new ApiSuccessResponse<typeof events>(201, events);
 
         return response;
     }

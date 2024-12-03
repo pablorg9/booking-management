@@ -20,31 +20,29 @@ export class EventRepository implements IEventRepository {
 
     async findEventsById(eventId: string): Promise<EventEntity> {
         const id = new ObjectId(eventId);
-        const event = (await this._mongo.db
-            .collection(this._defaultCollection)
-            .findOne({ event_id: id })) as IEventModel | null;
+        const event = await this._mongo.db.collection<IEventModel>(this._defaultCollection).findOne({ event_id: id });
         if (!event) return {} as EventEntity;
         return this.mapEventModelToEntity(event);
     }
 
-    async listUpcomingEvents(date: Date): Promise<IEventModel[]> {
+    async listLimitedEventsByDate(date: Date, limit: number): Promise<EventEntity[]> {
         const upcomingEvents = await this._mongo.db
-            .collection(this._defaultCollection)
-            .find({ event_datatime: { $gt: date } })
-            .sort({ event_datatime: 1 })
-            .limit(20)
+            .collection<IEventModel>(this._defaultCollection)
+            .find({ event_datetime: { $gt: date } })
+            .sort({ event_datetime: 1 })
+            .limit(limit)
             .toArray();
 
-        return upcomingEvents;
+        return upcomingEvents.map((event) => this.mapEventModelToEntity(event));
     }
 
-    async updateEventDate(eventId: string, datatime: string): Promise<void> {
+    async updateEventDate(eventId: string, datetime: Date): Promise<void> {
         const id = new ObjectId(eventId);
         await this._mongo.db.collection(this._defaultCollection).updateOne(
             { event_id: id },
             {
                 $set: {
-                    event_datatime: datatime,
+                    event_datetime: datetime,
                 },
             },
         );
