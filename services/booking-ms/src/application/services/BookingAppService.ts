@@ -17,6 +17,10 @@ export class BookingAppService {
         return this._bookingService.listMyBookings(userId);
     }
 
+    async deleteBooking(bookingId: string, userId: string): Promise<void> {
+        await this._bookingService.deleteBooking(bookingId, userId);
+    }
+
     private mapBookingDTOToEntity = (dto: IBookingDTO): Booking => {
         const id = dto.id ? dto.id : new ObjectId().toHexString();
         const user = new Booking(id, dto.userId, dto.eventId, dto.paymentId);

@@ -13,6 +13,7 @@ export const errorMiddleware = (
     _next: NextFunction,
 ): Response | void => {
     if (error.customError) {
+        console.log(error);
         return new ApiErrorResponse(error.status, error.code, error.message).send(res);
     }
 

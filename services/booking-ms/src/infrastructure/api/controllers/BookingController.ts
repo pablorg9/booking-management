@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { inject } from 'inversify';
 import { Request } from 'express';
-import { controller, httpGet, httpPost, interfaces, request } from 'inversify-express-utils';
+import { controller, httpDelete, httpGet, httpPost, interfaces, request, requestParam } from 'inversify-express-utils';
 import { BookingAppService } from '@application/services';
 import { ApiErrorResponse, ApiSuccessResponse, ErrorCode, StatusCode, validateUserAuth } from '@utils';
 import { jwtMiddleware } from '../middlewares';
@@ -35,6 +35,17 @@ export class BookingController implements interfaces.Controller {
 
         const bookings = await this._bookingAppService.listMyBookings(user_id);
         const response = new ApiSuccessResponse<typeof bookings>(202, bookings);
+
+        return response;
+    }
+
+    @httpDelete('/:id', jwtMiddleware)
+    async deleteBooking(@request() req: Request, @requestParam('id') bookingId: string) {
+        const user_id = req.auth?.user.id;
+        validateUserAuth(user_id);
+
+        await this._bookingAppService.deleteBooking(bookingId, user_id);
+        const response = new ApiSuccessResponse<typeof bookingId>(200, bookingId);
 
         return response;
     }

@@ -30,7 +30,8 @@ export enum ErrorCode {
     UNAUTHORIZED = 'F006',
     INVALID_PARAMETERS = 'F007',
     // Custom Failure Codes
-    EVENT_HAS_BOOKING = 'CF008',
+    EVENT_HAS_BOOKING = 'CF001',
+    BOOKING_DUPLICITY = 'CF002',
 }
 
 export const validateUserAuth = (user_id: string | null | undefined) => {

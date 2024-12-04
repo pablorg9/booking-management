@@ -18,6 +18,13 @@ export class BookingRepository implements IBookingRepository {
         await this._mongo.db.collection(this._defaultCollection).insertOne(bookingToSave);
     }
 
+    async findBookingById(bookingId: string): Promise<Booking> {
+        const id = new ObjectId(bookingId);
+        const booking = await this._mongo.db.collection<IBookingModel>(this._defaultCollection).findOne({ _id: id });
+        if (!booking) return {} as Booking;
+        return this.mapBookingModelToEntity(booking);
+    }
+
     async listBookingsByUserId(userId: string): Promise<Booking[]> {
         const bookings = await this._mongo.db
             .collection<IBookingModel>(this._defaultCollection)
@@ -33,7 +40,21 @@ export class BookingRepository implements IBookingRepository {
             .collection<IBookingModel>(this._defaultCollection)
             .findOne({ event_id: id });
 
-        return hasBookings ? true : false;
+        return !!hasBookings;
+    }
+
+    async userHasBooked(eventId: string, userId: string): Promise<boolean> {
+        const id = new ObjectId(eventId);
+        const hasBookings = await this._mongo.db
+            .collection<IBookingModel>(this._defaultCollection)
+            .findOne({ event_id: id, user_id: userId });
+        console.log(hasBookings);
+        return !!hasBookings;
+    }
+
+    async deleteBooking(bookingId: string): Promise<void> {
+        const id = new ObjectId(bookingId);
+        await this._mongo.db.collection(this._defaultCollection).deleteOne({ _id: id });
     }
 
     private mapBookingEntityToModel = (booking: Booking): IBookingModel => {
