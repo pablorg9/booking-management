@@ -1,10 +1,10 @@
 export interface IEnvironments {
-    MONGO: {
+    POSTGRES: {
         HOST: string;
+        PORT: number;
         USER: string;
         PASSWORD: string;
         DATABASE: string;
-        PORT: string;
     };
     SECRET_JWT: string;
 }
@@ -14,9 +14,7 @@ export interface IQueryParams {
     entity?: string;
     join?: string;
     condition?: string;
-    values?: string[];
     limit?: string | number;
     groupBy?: number;
     orderBy?: string;
-    getTotalRows?: boolean;
 }

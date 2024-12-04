@@ -6,10 +6,14 @@ services:
       dockerfile: Dockerfile
     container_name: bm-security-ms
     restart: unless-stopped
-    env_file: .env
     environment:
       NODE_ENV: ${NODE_ENV}
-      BOOKING_MS_URL: ${BOOKING_MS_URL}
+      DB_MYSQL_HOST: ${DB_MYSQL_HOST}
+      DB_MYSQL_USER: ${DB_MYSQL_USER}
+      DB_MYSQL_PORT: ${DB_MYSQL_PORT}
+      DB_MYSQL_DATABASE: ${DB_MYSQL_DATABASE}
+      DB_MYSQL_PASSWORD: ${DB_MYSQL_PASSWORD}
+
       PORT: ${SECURITY_PORT}
       SECRET_JWT: ${SECRET_JWT}
     networks:
@@ -27,9 +31,14 @@ services:
       dockerfile: Dockerfile
     container_name: bm-booking-ms
     restart: unless-stopped
-    env_file: .env
     environment:
       NODE_ENV: ${NODE_ENV}
+      DB_MONGO_HOST: ${DB_MONGO_HOST}
+      DB_MONGO_USER: ${DB_MONGO_USER}
+      DB_MONGO_PASSWORD: ${DB_MONGO_PASSWORD}
+      DB_MONGO_DATABASE: ${DB_MONGO_DATABASE}
+      DB_MONGO_DOCKER_PORT: ${DB_MONGO_DOCKER_PORT}
+
       SECRET_JWT: ${SECRET_JWT}
       PORT: ${BOOKING_PORT}
     networks:
@@ -39,8 +48,48 @@ services:
     ports:
       - '8081:8081'
     depends_on:
-      - mysql
       - mongo
+
+  payment-ms:
+    build: 
+      context: ./services/payment-ms
+      dockerfile: Dockerfile
+    container_name: bm-payment-ms
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_POSTGRES_HOST: ${DB_POSTGRES_HOST}
+      DB_POSTGRES_USER: ${DB_POSTGRES_USER}
+      DB_POSTGRES_PORT: ${DB_POSTGRES_PORT}
+      DB_POSTGRES_DATABASE: ${DB_POSTGRES_DATABASE}
+      DB_POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
+
+      SECRET_JWT: ${SECRET_JWT}
+      PORT: ${PAYMENT_PORT}
+    networks:
+      - bm-network
+    volumes:
+      - ./services/payment-ms/src:/payment-ms/src
+    ports:
+      - '8082:8082'
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: bm-postgres
+    restart: unless-stopped
+    networks:
+      - bm-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: ${DB_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_POSTGRES_DATABASE}
+    ports:
+      - "5432:5432"
 
   mysql:
     image: mysql:8.4.3
@@ -51,7 +100,6 @@ services:
     volumes:
       - mysql:/var/lib/mysql
       - ./scripts/mysql:/docker-entrypoint-initdb.d
-    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_MYSQL_PASSWORD}
       MYSQL_DATABASE: ${DB_MYSQL_DATABASE}
@@ -64,11 +112,10 @@ services:
     image: mongo:7.0.12
     container_name: bm-mongodb
     restart: unless-stopped
-    env_file: .env
-    volumes:
-      - mongodb:/data/db
     networks:
       - bm-network
+    volumes:
+      - mongodb:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_MONGO_PASSWORD}
@@ -97,3 +144,4 @@ networks:
 volumes:
   mysql:
   mongodb:
+  postgres-data:
