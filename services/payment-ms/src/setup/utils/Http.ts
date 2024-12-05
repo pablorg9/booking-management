@@ -58,6 +58,12 @@ export abstract class ApiResponse<T> {
     }
 }
 
+export const validateUserAuth = (user_id: string | null | undefined) => {
+    if (!user_id) {
+        throw new ApiErrorResponse(StatusCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED, 'Invalid token object');
+    }
+};
+
 export class ApiSuccessResponse<T> extends ApiResponse<T> {
     constructor(status: StatusCode, data?: T, message?: string) {
         super(false, status, ErrorCode.SUCCESS, message || 'Successful Operation', data);

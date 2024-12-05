@@ -7,16 +7,8 @@ export interface IEnvironments {
         PORT: string;
     };
     SECRET_JWT: string;
-}
-
-export interface IQueryParams {
-    columns?: string;
-    entity?: string;
-    join?: string;
-    condition?: string;
-    values?: string[];
-    limit?: string | number;
-    groupBy?: number;
-    orderBy?: string;
-    getTotalRows?: boolean;
+    PAYMENT_MS: {
+        PAYMENT_MS_URL: string;
+        PAYMENT_SERVICE_TOKEN: string;
+    };
 }

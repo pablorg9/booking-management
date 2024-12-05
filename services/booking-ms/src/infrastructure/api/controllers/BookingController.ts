@@ -43,7 +43,7 @@ export class BookingController implements interfaces.Controller {
         validateUserAuth(user_id);
 
         const bookings = await this._bookingAppService.listMyBookings(user_id);
-        const response = new ApiSuccessResponse<typeof bookings>(202, bookings);
+        const response = new ApiSuccessResponse<typeof bookings>(200, bookings);
 
         return response;
     }

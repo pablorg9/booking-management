@@ -11,4 +11,8 @@ export const ENVIRONMENTS: IEnvironments = {
         USER: process.env.DB_POSTGRES_USER || '',
     },
     SECRET_JWT: process.env.SECRET_JWT || '',
+    BOOKING_MS: {
+        BOOKING_MS_URL: process.env.BOOKING_MS_URL || '',
+        BOOKING_SERVICE_TOKEN: process.env.BOOKING_SERVICE_TOKEN || '',
+    },
 };

@@ -7,6 +7,10 @@ export interface IEnvironments {
         DATABASE: string;
     };
     SECRET_JWT: string;
+    BOOKING_MS: {
+        BOOKING_MS_URL: string;
+        BOOKING_SERVICE_TOKEN: string;
+    };
 }
 
 export interface IQueryParams {

@@ -26,8 +26,8 @@ export class UserController implements interfaces.Controller {
     @httpPost('/sign-up', validate(signUpSchema))
     async signUp(@request() req: Request) {
         const userDTO: IUserDTO = req.body;
-        const user = await this._userAppService.signUp(userDTO);
-        const response = new ApiSuccessResponse<typeof user>(201, user);
+        await this._userAppService.signUp(userDTO);
+        const response = new ApiSuccessResponse(201, 'User created!');
 
         return response;
     }

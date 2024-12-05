@@ -14,6 +14,10 @@ export class PaymentAppService {
         return payment;
     }
 
+    async listMyPayments(userId: string): Promise<Payment[]> {
+        return this._paymentService.listMyPayments(userId);
+    }
+
     private mapPaymentDTOToEntity = (dto: IPaymentDTO): Payment => {
         const id = v4();
         const payment = new Payment(id, dto.userId, dto.productId, dto.amount, dto.description);

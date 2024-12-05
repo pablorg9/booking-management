@@ -33,6 +33,21 @@ export class PaymentRepository implements IPaymentRepository {
         }
     }
 
+    async listPaymentsByUserId(userId: string): Promise<Payment[]> {
+        const client = await this._db.postgresDb.connect();
+        try {
+            const query = {
+                text: `SELECT * FROM payments WHERE user_id = $1`,
+                values: [userId],
+            };
+            const result = await client.query<IPaymentModel>(query);
+
+            return result.rows.map((payment) => this.mapPaymentModelToEntity(payment));
+        } finally {
+            client.release();
+        }
+    }
+
     private mapPaymentEntityToModel = (payment: Payment): IPaymentModel => {
         return {
             payment_id: payment.id,
@@ -44,5 +59,19 @@ export class PaymentRepository implements IPaymentRepository {
             payment_description: payment.description,
             payment_createdAt: payment.createdAt,
         };
+    };
+
+    private mapPaymentModelToEntity = (payment: IPaymentModel): Payment => {
+        if (!payment) return {} as Payment;
+        return new Payment(
+            payment.payment_id,
+            payment.user_id,
+            payment.product_id,
+            payment.payment_amount,
+            payment.payment_description,
+            payment.payment_status,
+            payment.payment_currency,
+            payment.payment_createdAt,
+        );
     };
 }

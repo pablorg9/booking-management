@@ -13,10 +13,9 @@ export class UserAppService {
         return user;
     }
 
-    async signUp(userDTO: IUserDTO): Promise<User> {
+    async signUp(userDTO: IUserDTO): Promise<void> {
         const user = this.mapUserDTOToEntity(userDTO);
         await this._userService.signUp(user);
-        return user;
     }
 
     private mapUserDTOToEntity = (dto: IUserDTO): User => {

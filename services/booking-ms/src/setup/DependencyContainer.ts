@@ -4,9 +4,9 @@ import { ENVIRONMENTS } from './Envs';
 import { BookingController, EventController } from '@infrastructure/api/controllers';
 import { BookingAppService, EventAppService } from '@application/services';
 import { BookingService, EventService } from '@domain/services';
-import { IBookingRepository, IEventRepository } from '@domain/repositories';
-import { BookingRepository, EventRepository } from '@infrastructure/repositories';
-import { BOOKING_REPOSITORY, EVENT_REPOSITORY, MONGO } from './Symbols';
+import { IBookingRepository, IEventRepository, IPaymentRepository } from '@domain/repositories';
+import { BookingRepository, EventRepository, PaymentRepository } from '@infrastructure/repositories';
+import { BOOKING_REPOSITORY, EVENT_REPOSITORY, MONGO, PAYMENT_REPOSITORY } from './Symbols';
 import { IMongo, MongoConnection } from '@infrastructure/repositories/config';
 
 const container = new Container();
@@ -25,6 +25,7 @@ container.bind<BookingAppService>(BookingAppService).toSelf().inSingletonScope()
 // ==================== REPOSITORIES =====================
 container.bind<IEventRepository>(EVENT_REPOSITORY).to(EventRepository).inSingletonScope();
 container.bind<IBookingRepository>(BOOKING_REPOSITORY).to(BookingRepository).inSingletonScope();
+container.bind<IPaymentRepository>(PAYMENT_REPOSITORY).to(PaymentRepository).inSingletonScope();
 
 // ==================== DOMAIN_SERVICE ===================
 container.bind<EventService>(EventService).toSelf().inRequestScope();

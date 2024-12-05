@@ -11,4 +11,8 @@ export const ENVIRONMENTS: IEnvironments = {
         PORT: process.env.DB_MONGO_DOCKER_PORT || '',
     },
     SECRET_JWT: process.env.SECRET_JWT || '',
+    PAYMENT_MS: {
+        PAYMENT_MS_URL: process.env.PAYMENT_MS_URL || '',
+        PAYMENT_SERVICE_TOKEN: process.env.PAYMENT_SERVICE_TOKEN || '',
+    },
 };

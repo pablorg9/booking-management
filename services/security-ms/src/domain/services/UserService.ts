@@ -22,7 +22,7 @@ export class UserService {
             const match = await compare(password as string, user.password as string);
             if (match) {
                 const dataToReturn = {
-                    token: sign({ user: user }, this._environments.SECRET_JWT, { algorithm: 'HS256' }),
+                    token: sign({ user }, this._environments.SECRET_JWT, { algorithm: 'HS256' }),
                     user_id: user.id,
                     name: user.name,
                     authenticated: true,
@@ -39,7 +39,7 @@ export class UserService {
         };
     }
 
-    async signUp(user: User): Promise<User> {
+    async signUp(user: User): Promise<void> {
         user.createdAt = getCurrentTime();
         user.password = await hash(user.password, 5);
 
@@ -52,7 +52,6 @@ export class UserService {
             };
         }
         await this._userRepository.createUser(user);
-        return user;
     }
 
     async validateUserEmail(email: string): Promise<boolean> {

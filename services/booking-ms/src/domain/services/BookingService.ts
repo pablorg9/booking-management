@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
-import { IBookingRepository, IEventRepository } from '@domain/repositories';
-import { BOOKING_REPOSITORY, EVENT_REPOSITORY } from '@setup/Symbols';
+import { IBookingRepository, IEventRepository, IPaymentRepository } from '@domain/repositories';
+import { BOOKING_REPOSITORY, EVENT_REPOSITORY, PAYMENT_REPOSITORY } from '@setup/Symbols';
 import { Booking } from '@domain/entities';
 import { ErrorCode, StatusCode } from '@setup/utils';
 import { BookingStatus } from '@domain/value-objects';
@@ -10,6 +10,7 @@ export class BookingService {
     constructor(
         @inject(EVENT_REPOSITORY) private _eventRepository: IEventRepository,
         @inject(BOOKING_REPOSITORY) private _bookingRepository: IBookingRepository,
+        @inject(PAYMENT_REPOSITORY) private _paymentRepository: IPaymentRepository,
     ) {}
 
     async createBooking(booking: Booking): Promise<Booking> {
@@ -48,7 +49,7 @@ export class BookingService {
         await this._bookingRepository.createBooking(booking);
         await this._eventRepository.updateEventTotalAttenders(booking.eventId);
 
-        // TODO: next step call payment-ms
+        await this._paymentRepository.createPayment(booking.userId, booking.price, event.name, booking.id);
         return booking;
     }
 
