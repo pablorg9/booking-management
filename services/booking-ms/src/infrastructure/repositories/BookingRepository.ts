@@ -6,6 +6,7 @@ import { MONGO } from '@setup/Symbols';
 import { Booking } from '@domain/entities';
 import { IBookingModel } from '@setup/interfaces/models';
 import { ObjectId } from 'mongodb';
+import { BookingStatus } from '@domain/value-objects';
 
 @injectable()
 export class BookingRepository implements IBookingRepository {
@@ -55,6 +56,25 @@ export class BookingRepository implements IBookingRepository {
     async deleteBooking(bookingId: string): Promise<void> {
         const id = new ObjectId(bookingId);
         await this._mongo.db.collection(this._defaultCollection).deleteOne({ _id: id });
+    }
+
+    async updateBookingStatusAndPaymentIdById(
+        bookingId: string,
+        paymentId: string,
+        status: BookingStatus,
+        updatedAt: Date,
+    ): Promise<void> {
+        const id = new ObjectId(bookingId);
+        await this._mongo.db.collection(this._defaultCollection).updateOne(
+            { _id: id },
+            {
+                $set: {
+                    payment_id: paymentId,
+                    booking_status: status,
+                    booking_updatedAt: updatedAt,
+                },
+            },
+        );
     }
 
     private mapBookingEntityToModel = (booking: Booking): IBookingModel => {

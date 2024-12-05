@@ -1,3 +1,5 @@
+import { BookingStatus } from '@domain/value-objects';
+
 /* eslint-disable no-unused-vars */
 export class Booking {
     constructor(
@@ -6,7 +8,7 @@ export class Booking {
         public eventId: string,
         public paymentId: string = '',
         public eventName: string = '',
-        public status: string = 'PENDING',
+        public status: BookingStatus = 'PENDING',
         public price: number = 0,
         public createdAt: Date | string | null = null,
         public updatedAt: Date | string | null = null,

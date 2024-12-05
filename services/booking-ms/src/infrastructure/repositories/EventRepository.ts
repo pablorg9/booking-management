@@ -48,13 +48,13 @@ export class EventRepository implements IEventRepository {
         );
     }
 
-    async updateEventTotalAttenders(eventId: string): Promise<void> {
+    async updateEventTotalAttenders(eventId: string, nAttenders = 1): Promise<void> {
         const id = new ObjectId(eventId);
         await this._mongo.db.collection(this._defaultCollection).updateOne(
             { _id: id },
             {
                 $inc: {
-                    event_totalAttenders: 1,
+                    event_totalAttenders: nAttenders,
                 },
             },
         );

@@ -3,6 +3,7 @@ import { BookingService } from '@domain/services';
 import { IBookingDTO } from '@setup/interfaces/DTOs';
 import { Booking } from '@domain/entities';
 import { ObjectId } from 'mongodb';
+import { BookingStatus } from '@domain/value-objects';
 
 @injectable()
 export class BookingAppService {
@@ -15,6 +16,10 @@ export class BookingAppService {
 
     async listMyBookings(userId: string): Promise<Booking[]> {
         return this._bookingService.listMyBookings(userId);
+    }
+
+    async updateBookingStatus(bookingId: string, paymentId: string, status: BookingStatus): Promise<void> {
+        await this._bookingService.updateBookingStatus(bookingId, paymentId, status);
     }
 
     async deleteBooking(bookingId: string, userId: string): Promise<void> {

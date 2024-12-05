@@ -1,12 +1,21 @@
 import 'reflect-metadata';
 import { inject } from 'inversify';
 import { Request } from 'express';
-import { controller, httpDelete, httpGet, httpPost, interfaces, request, requestParam } from 'inversify-express-utils';
+import {
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    httpPut,
+    interfaces,
+    request,
+    requestParam,
+} from 'inversify-express-utils';
 import { BookingAppService } from '@application/services';
 import { ApiErrorResponse, ApiSuccessResponse, ErrorCode, StatusCode, validateUserAuth } from '@utils';
 import { jwtMiddleware } from '../middlewares';
 import { IBookingDTO } from '@setup/interfaces/DTOs';
-import { createBookingSchema, validate } from '../validators';
+import { createBookingSchema, updateBookingStatusSchema, validate } from '../validators';
 
 @controller('/bookings')
 export class BookingController implements interfaces.Controller {
@@ -29,12 +38,22 @@ export class BookingController implements interfaces.Controller {
     }
 
     @httpGet('/my-bookings', jwtMiddleware)
-    async listUpcomingEvents(@request() req: Request) {
+    async listMyBookings(@request() req: Request) {
         const user_id = req.auth?.user.id;
         validateUserAuth(user_id);
 
         const bookings = await this._bookingAppService.listMyBookings(user_id);
         const response = new ApiSuccessResponse<typeof bookings>(202, bookings);
+
+        return response;
+    }
+
+    @httpPut('/status', jwtMiddleware, validate(updateBookingStatusSchema))
+    async updateBookingStatus(@request() req: Request) {
+        const { bookingId, paymentId, status } = req.body;
+
+        await this._bookingAppService.updateBookingStatus(bookingId, paymentId, status);
+        const response = new ApiSuccessResponse(200, 'Status updated');
 
         return response;
     }

@@ -3,6 +3,7 @@ import { IBookingRepository, IEventRepository } from '@domain/repositories';
 import { BOOKING_REPOSITORY, EVENT_REPOSITORY } from '@setup/Symbols';
 import { Booking } from '@domain/entities';
 import { ErrorCode, StatusCode } from '@setup/utils';
+import { BookingStatus } from '@domain/value-objects';
 
 @injectable()
 export class BookingService {
@@ -53,6 +54,24 @@ export class BookingService {
 
     async listMyBookings(userId: string): Promise<Booking[]> {
         return this._bookingRepository.listBookingsByUserId(userId);
+    }
+
+    async updateBookingStatus(bookingId: string, paymentId: string, status: BookingStatus): Promise<void> {
+        const updatedAt = new Date();
+        const booking = await this._bookingRepository.findBookingById(bookingId);
+        if (booking.status === 'DECLINED') {
+            throw {
+                message: 'This booking has been already declined',
+                status: StatusCode.CONFLICT,
+                code: ErrorCode.BOOKING_ALREADY_DECLINED,
+                customError: true,
+            };
+        }
+        await this._bookingRepository.updateBookingStatusAndPaymentIdById(bookingId, paymentId, status, updatedAt);
+
+        if (status === 'DECLINED') {
+            await this._eventRepository.updateEventTotalAttenders(booking.eventId, -1);
+        }
     }
 
     async deleteBooking(bookingId: string, userId: string): Promise<void> {

@@ -32,6 +32,7 @@ export enum ErrorCode {
     // Custom Failure Codes
     EVENT_HAS_BOOKING = 'CF001',
     BOOKING_DUPLICITY = 'CF002',
+    BOOKING_ALREADY_DECLINED = 'CF003',
 }
 
 export const validateUserAuth = (user_id: string | null | undefined) => {
