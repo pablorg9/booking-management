@@ -1,5 +1,112 @@
 # security-ms
 
-## Healtcheck
+## Overview
 
-# curl http://localhost:8080/api/v1/healtcheck
+This microservice is to manage users, this microservice belongs to booking-management ms ecosystem, orchestrated using Docker Compose
+
+## Project structure
+
+```bash
+├── application
+│   └── services
+│       ├── UserAppService.ts
+│       └── index.ts
+├── domain
+│   ├── entities
+│   │   ├── User.ts
+│   │   └── index.ts
+│   ├── repositories
+│   │   ├── IUserRepository.ts
+│   │   └── index.ts
+│   ├── services
+│   │   ├── UserService.ts
+│   │   └── index.ts
+│   └── value-objects
+├── infrastructure
+│   ├── api
+│   │   ├── Server.ts
+│   │   ├── controllers
+│   │   │   ├── UserController.ts
+│   │   │   └── index.ts
+│   │   ├── middlewares
+│   │   │   ├── CommonMiddleware.ts
+│   │   │   ├── ErrorMiddleware.ts
+│   │   │   ├── JWTMiddleware.ts
+│   │   │   └── index.ts
+│   │   └── validators
+│   │       ├── UserValidators.ts
+│   │       ├── Validation.ts
+│   │       └── index.ts
+│   └── repositories
+│       ├── UserRepository.ts
+│       ├── config
+│       │   ├── MysqlConfig.ts
+│       │   └── index.ts
+│       └── index.ts
+└── setup
+    ├── DependencyContainer.ts
+    ├── Envs.ts
+    ├── Symbols.ts
+    ├── index.ts
+    ├── interfaces
+    │   ├── DTOs
+    │   │   ├── IUserDTO.ts
+    │   │   └── index.ts
+    │   ├── ICommon.ts
+    │   ├── index.ts
+    │   └── models
+    │       ├── IUserModel.ts
+    │       └── index.ts
+    ├── types.d.ts
+    └── utils
+        ├── Common.ts
+        ├── Http.ts
+        ├── QueryBuilder.ts
+        └── index.ts
+```
+
+## Prerequisites
+
+* Node.js v20
+* Docker
+
+## Endpoints
+
+URI: http://localhost:8080/api/v1
+
+### Users
+
+* Sign-up
+  - **URL**: `/users/sign-up`
+  - **Method**: `POST`
+  - **Description**: Creates a new user
+  - **Request Body**:
+    ```json
+    {
+        "name": "Juan Pablo Restrepo",
+        "email":"emailtest@gmail.com",
+        "password":"testingmail2024",
+        "phone": "+5712345678"
+    }
+    ```
+  - **Response**
+      ```json
+      {
+      "id": "12345",
+      "name": "Event Name",
+      "date": "2024-12-10",
+      "location": "Venue Address"
+      }
+      ```
+
+* Sign-in
+  - **URL**: `/users/sign-in`
+  - **Method**: `POST`
+  - **Description**: signIn and get the token
+  - **Response**
+      ```json
+        {
+            "email":"emailtest@gmail.com",
+            "password":"testingmail2024"
+        }
+      ```
