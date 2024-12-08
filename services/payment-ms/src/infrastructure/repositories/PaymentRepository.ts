@@ -15,7 +15,7 @@ export class PaymentRepository implements IPaymentRepository {
         const client = await this._db.postgresDb.connect();
         try {
             const query = {
-                text: `INSERT INTO ${this._postgresEntity}(payment_id, user_id, product_id, payment_amount, payment_currency, payment_status, payment_description, payment_createdAt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+                text: `INSERT INTO ${this._postgresEntity}(payment_id, user_id, product_id, payment_amount, payment_currency, payment_status, payment_description) VALUES($1, $2, $3, $4, $5, $6, $7)`,
                 values: [
                     paymentToSave.payment_id,
                     paymentToSave.user_id,
@@ -24,7 +24,6 @@ export class PaymentRepository implements IPaymentRepository {
                     paymentToSave.payment_currency,
                     paymentToSave.payment_status,
                     paymentToSave.payment_description,
-                    paymentToSave.payment_createdAt,
                 ],
             };
             await client.query(query);
@@ -57,12 +56,13 @@ export class PaymentRepository implements IPaymentRepository {
             payment_currency: payment.currency,
             payment_status: payment.status,
             payment_description: payment.description,
-            payment_createdAt: payment.createdAt,
+            payment_created_at: payment.createdAt,
         };
     };
 
     private mapPaymentModelToEntity = (payment: IPaymentModel): Payment => {
         if (!payment) return {} as Payment;
+
         return new Payment(
             payment.payment_id,
             payment.user_id,
@@ -71,7 +71,7 @@ export class PaymentRepository implements IPaymentRepository {
             payment.payment_description,
             payment.payment_status,
             payment.payment_currency,
-            payment.payment_createdAt,
+            payment.payment_created_at,
         );
     };
 }

@@ -89,36 +89,30 @@ If you're working with postman, we recommend use the Variables, it should looks 
 * Create payment
   - **URL**: `/payments`
   - **Method**: `POST`
-  - **Description**: Creates a new payment
-  - **Request Body**:
-    ```json
-    {
-        "userId": "2ea12ff9-3dc9-47f7-b8a4-032058b0631c",
-        "amount": 50,
-        "description": "Booking for Node.js DDD talk",
-        "productId": "6750e44113d49bb0a3ac3779"
-    }
-    ```
-  - **Response**
-      ```json
-      {
-      "id": "12345",
-      "name": "Event Name",
-      "date": "2024-12-10",
-      "location": "Venue Address"
-      }
-      ```
+  - **Description**: Creates a new payment. This request is called after the booking creation. In this case I'm not sharing the response because this endpoints should not be call from postman, it is actually call from payment-ms
 
 * My payments
   - **URL**: `/payments/my-payments`
   - **Method**: `GET`
-  - **Description**: Get all payments made by the current user
+  - **Description**: Get all payments made by the current user.
   - **Response**
       ```json
       {
-      "id": "12345",
-      "name": "Event Name",
-      "date": "2024-12-10",
-      "location": "Venue Address"
+          "isError": false,
+          "status": 200,
+          "code": "S001",
+          "message": "Successful Operation",
+          "data": [
+              {
+                  "id": "81ad1714-5032-49f2-84ef-2ce0e96cf1c1",
+                  "userId": "59933d79-df7d-4001-89c6-b86d1e4f0a47",
+                  "productId": "675477b042c13404ef32062a",
+                  "amount": "50.00",
+                  "description": "Node.js DDD talk",
+                  "status": "APPROVED",
+                  "currency": "USD",
+                  "createdAt": "2024-12-08T02:37:49.025Z"
+              }
+          ]
       }
       ```

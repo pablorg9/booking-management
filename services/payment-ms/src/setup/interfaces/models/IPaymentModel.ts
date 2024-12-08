@@ -6,5 +6,5 @@ export interface IPaymentModel {
     payment_currency: string;
     payment_status: 'PENDING' | 'DECLINED' | 'APPROVED';
     payment_description: string;
-    payment_createdAt: Date | string | null;
+    payment_created_at: Date | string | null;
 }
