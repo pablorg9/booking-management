@@ -483,7 +483,7 @@
 	"variable": [
 		{
 			"key": "TOKEN",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNTk5MzNkNzktZGY3ZC00MDAxLTg5YzYtYjg2ZDFlNGYwYTQ3IiwibmFtZSI6Ikp1YW4gUGFibG8gUmVzdHJlcG8iLCJlbWFpbCI6ImVtYWlsdGVzdEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQwNSREbDkxMEU0QTEwanluUnZiTVZ2QlFPWXlHdTY4Z1p2T210NnZYendLTWZzdjJmMWxJaHZ0bSIsInBob25lIjoiKzU3MzEwNDUxNTQ1IiwiY3JlYXRlZEF0IjoiMjAyNC0xMi0wN1QxNjoyMjozNS4wMDBaIn0sImlhdCI6MTczMzU4ODU4OH0._8ZbPFRpy-iv2kIRO4swAZtc_wnHUrCDzeR-_zsblqE",
+			"value": "",
 			"type": "string"
 		}
 	]
